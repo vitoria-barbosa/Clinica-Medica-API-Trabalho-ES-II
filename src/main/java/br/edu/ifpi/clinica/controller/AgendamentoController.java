@@ -55,4 +55,14 @@ public class AgendamentoController {
         agendamentoService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping(value = "/paciente/{pacienteId}")
+    public ResponseEntity<List<AgendamentoDTO>> findByPaciente(@PathVariable Long pacienteId) {
+        return ResponseEntity.ok(agendamentoService.findByPaciente(pacienteId));
+    }
+
+    @GetMapping(value = "/profissional/{profissionalId}")
+    public ResponseEntity<List<AgendamentoDTO>> findByProfissional(@PathVariable Long profissionalId) {
+        return ResponseEntity.ok(agendamentoService.findByProfissional(profissionalId));
+    }
 }
