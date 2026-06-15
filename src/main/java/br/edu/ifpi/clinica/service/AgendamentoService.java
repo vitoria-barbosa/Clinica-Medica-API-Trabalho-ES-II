@@ -61,6 +61,16 @@ public class AgendamentoService {
         return agendamentos.stream().map(AgendamentoDTO::new).toList();
     }
 
+    public List<AgendamentoDTO> findByPaciente(Long pacienteId) {
+        return agendamentoRepository.findByPacienteId(pacienteId)
+                .stream().map(AgendamentoDTO::new).toList();
+    }
+
+    public List<AgendamentoDTO> findByProfissional(Long profissionalId) {
+        return agendamentoRepository.findByProfissionalId(profissionalId)
+                .stream().map(AgendamentoDTO::new).toList();
+    }
+
     public AgendamentoDTO update(Long id, AgendamentoRequestDTO dto) {
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum agendamento com esse ID."));
