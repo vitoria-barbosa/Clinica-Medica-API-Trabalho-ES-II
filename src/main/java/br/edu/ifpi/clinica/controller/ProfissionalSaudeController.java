@@ -1,21 +1,14 @@
 package br.edu.ifpi.clinica.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import br.edu.ifpi.clinica.dto.DiaTurnoRequestDTO;
 import br.edu.ifpi.clinica.dto.ProfissionalSaudeDTO;
 import br.edu.ifpi.clinica.dto.ProfissionalSaudeRequestDTO;
 import br.edu.ifpi.clinica.service.ProfissionalSaudeService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/profissionais-da-saude")
@@ -53,6 +46,18 @@ public class ProfissionalSaudeController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         profissionalSaudeService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{idProfissional}/grade-horarios")
+    public ResponseEntity<?> adicionarTurno(@PathVariable Long idProfissional, @RequestBody @Valid DiaTurnoRequestDTO dto) {
+        ProfissionalSaudeDTO profissional = profissionalSaudeService.adicionarDiaTurnoAoProfissional(idProfissional, dto);
+        return ResponseEntity.ok(profissional);
+    }
+
+    @DeleteMapping("/{idProfissional}/grade-horarios/{id}")
+    public ResponseEntity<?> removerTurno(@PathVariable Long idProfissional, @PathVariable Long id) {
+        profissionalSaudeService.removerDiaTurnoDeProfissional(idProfissional, id);
         return ResponseEntity.ok().build();
     }
 }

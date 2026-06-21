@@ -1,29 +1,25 @@
 package br.edu.ifpi.clinica.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import br.edu.ifpi.clinica.dto.EspecialidadeDTO;
 import br.edu.ifpi.clinica.dto.EspecialidadeRequestDTO;
+import br.edu.ifpi.clinica.dto.ProfissionalSaudeDTO;
 import br.edu.ifpi.clinica.service.EspecialidadeService;
+import br.edu.ifpi.clinica.service.ProfissionalSaudeService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/especialidades")
 public class EspecialidadeController {
     private final EspecialidadeService especialidadeService;
+    private final ProfissionalSaudeService profissionalSaudeService;
 
-    public EspecialidadeController(EspecialidadeService especialidadeService) {
+    public EspecialidadeController(EspecialidadeService especialidadeService, ProfissionalSaudeService profissionalSaudeService) {
         this.especialidadeService = especialidadeService;
+        this.profissionalSaudeService = profissionalSaudeService;
     }
 
     @PostMapping
@@ -54,5 +50,11 @@ public class EspecialidadeController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         especialidadeService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/profissionais")
+    public ResponseEntity<?> buscarProfissionaisPorEspecialidade(@PathVariable long id) {
+        List<ProfissionalSaudeDTO> profissionais = profissionalSaudeService.buscarProfissionaisPelaEspecialidade(id);
+        return ResponseEntity.ok(profissionais);
     }
 }
