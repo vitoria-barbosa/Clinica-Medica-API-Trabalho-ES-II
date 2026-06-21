@@ -8,6 +8,6 @@ public record DiaRequestDTO(
         String nome) {
 
     public Dia toEntity() {
-        return new Dia(this.nome);
+        return new Dia(this.nome.toLowerCase());
     }
 }

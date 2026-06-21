@@ -1,16 +1,16 @@
 package br.edu.ifpi.clinica.dto;
 
-import java.time.LocalDateTime;
-
 import br.edu.ifpi.clinica.model.Consulta;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.time.LocalDateTime;
+
 public record ConsultaRequestDTO(
         @Future(message = "A data e hora da consulta deve ser no futuro")
         @NotNull(message = "A data e hora da consulta é obrigatória")
-        LocalDateTime datHora,
+        LocalDateTime dataHora,
         @Positive(message = "O ID do profissional deve ser maior que zero")
         @NotNull(message = "O ID do profissional é obrigatório")
         long profissionalId,
@@ -29,7 +29,7 @@ public record ConsultaRequestDTO(
 
     public Consulta toEntity() {
         Consulta consulta = new Consulta();
-        consulta.setDatHora(this.datHora);
+        consulta.setDataHora(this.dataHora);
         consulta.setSintomas(this.sintomas);
         consulta.setDiagnostico(this.diagnostico);
         consulta.setPrescricao(this.prescricao);

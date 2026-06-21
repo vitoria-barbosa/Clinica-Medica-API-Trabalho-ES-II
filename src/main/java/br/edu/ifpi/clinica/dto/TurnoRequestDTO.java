@@ -8,6 +8,6 @@ public record TurnoRequestDTO(
         String nome) {
 
     public Turno toEntity() {
-        return new Turno(this.nome);
+        return new Turno(this.nome.toLowerCase());
     }
 }

@@ -9,7 +9,7 @@ public record ConsultaDTO(long id, LocalDateTime datHora, long profissionalId, S
                           String sintomas, String diagnostico, String prescricao, String exames, double valorTotal) {
 
     public ConsultaDTO(Consulta consulta) {
-        this(consulta.getId(), consulta.getDatHora(),
+        this(consulta.getId(), consulta.getDataHora(),
                 consulta.getProfissional().getId(), consulta.getProfissional().getNome(),
                 consulta.getPaciente().getId(), consulta.getPaciente().getNome(),
                 consulta.getRecepcionista().getId(), consulta.getRecepcionista().getNome(),
