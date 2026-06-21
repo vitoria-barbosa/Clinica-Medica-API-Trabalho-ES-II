@@ -42,7 +42,7 @@ public class DiaService {
         Dia dia = diaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhuma categoria com esse ID."));
 
-        dia.setNome(dto.nome());
+        dia.setNome(dto.nome().toLowerCase());
         dia = diaRepository.save(dia);
 
         return new DiaDTO(dia);

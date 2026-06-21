@@ -1,10 +1,5 @@
 package br.edu.ifpi.clinica.service;
 
-import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
 import br.edu.ifpi.clinica.dto.ConsultaDTO;
 import br.edu.ifpi.clinica.dto.ConsultaRequestDTO;
 import br.edu.ifpi.clinica.exception.DadoInvalidoException;
@@ -18,6 +13,10 @@ import br.edu.ifpi.clinica.repository.ConsultaRepository;
 import br.edu.ifpi.clinica.repository.PacienteRepository;
 import br.edu.ifpi.clinica.repository.ProfissionalSaudeRepository;
 import br.edu.ifpi.clinica.repository.RecepcionistaRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ConsultaService {
@@ -77,7 +76,7 @@ public class ConsultaService {
         Recepcionista recepcionista = recepcionistaRepository.findById(dto.recepcionistaId())
                 .orElseThrow(() -> new DadoInvalidoException("ID de recepcionista inválido."));
 
-        consulta.setDatHora(dto.datHora());
+        consulta.setDataHora(dto.dataHora());
         consulta.setProfissional(profissional);
         consulta.setPaciente(paciente);
         consulta.setRecepcionista(recepcionista);

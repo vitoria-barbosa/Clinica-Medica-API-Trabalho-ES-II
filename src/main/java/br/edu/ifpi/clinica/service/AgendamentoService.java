@@ -1,23 +1,23 @@
 package br.edu.ifpi.clinica.service;
 
-import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
 import br.edu.ifpi.clinica.dto.AgendamentoDTO;
 import br.edu.ifpi.clinica.dto.AgendamentoRequestDTO;
 import br.edu.ifpi.clinica.exception.DadoInvalidoException;
 import br.edu.ifpi.clinica.exception.DatabaseException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
-import br.edu.ifpi.clinica.model.Agendamento;
-import br.edu.ifpi.clinica.model.Paciente;
-import br.edu.ifpi.clinica.model.ProfissionalSaude;
-import br.edu.ifpi.clinica.model.Recepcionista;
+import br.edu.ifpi.clinica.model.*;
 import br.edu.ifpi.clinica.repository.AgendamentoRepository;
 import br.edu.ifpi.clinica.repository.PacienteRepository;
 import br.edu.ifpi.clinica.repository.ProfissionalSaudeRepository;
 import br.edu.ifpi.clinica.repository.RecepcionistaRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AgendamentoService {
@@ -43,7 +43,14 @@ public class AgendamentoService {
         Recepcionista recepcionista = recepcionistaRepository.findById(dto.recepcionistaId())
                 .orElseThrow(() -> new DadoInvalidoException("ID de recepcionista inválido."));
 
-        Agendamento agendamento = new Agendamento(dto.datHora(), profissional, paciente, recepcionista);
+        validarDiaTurnoProfissional(dto.dataHora(), profissional);
+        validarDataHora(dto.dataHora(), dto.profissionalId());
+        validarQtdAgendamentos(dto.dataHora(), dto.profissionalId());
+        if (agendamentoRepository.findAgendamentoByDataHoraAndPacienteId(dto.dataHora(), dto.pacienteId()).isPresent()) {
+            throw new DadoInvalidoException("Esse paciente já possui outro atendimento nesse dia e horário.");
+        }
+
+        Agendamento agendamento = new Agendamento(dto.dataHora(), profissional, paciente, recepcionista);
         agendamento = agendamentoRepository.save(agendamento);
         return new AgendamentoDTO(agendamento);
     }
@@ -84,7 +91,14 @@ public class AgendamentoService {
         Recepcionista recepcionista = recepcionistaRepository.findById(dto.recepcionistaId())
                 .orElseThrow(() -> new DadoInvalidoException("ID de recepcionista inválido."));
 
-        agendamento.setDatHora(dto.datHora());
+        validarDiaTurnoProfissional(dto.dataHora(), profissional);
+        validarDataHora(dto.dataHora(), dto.profissionalId());
+        validarQtdAgendamentos(dto.dataHora(), dto.profissionalId());
+        if (agendamentoRepository.findAgendamentoByDataHoraAndPacienteId(dto.dataHora(), dto.pacienteId()).isPresent()) {
+            throw new DadoInvalidoException("Esse paciente já possui outro atendimento nesse dia e horário.");
+        }
+
+        agendamento.setDataHora(dto.dataHora());
         agendamento.setProfissional(profissional);
         agendamento.setPaciente(paciente);
         agendamento.setRecepcionista(recepcionista);
@@ -103,5 +117,63 @@ public class AgendamentoService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    private void validarDataHora(LocalDateTime dataHora, long profissionalId) {
+        if (dataHora.toLocalTime().isBefore(LocalTime.of(8, 0)) || dataHora.toLocalTime().isAfter(LocalTime.of(18, 0))) {
+            throw new DadoInvalidoException("O horário do agendamento tem que ser entre 8:00 e 18:00.");
+        }
+
+        if (agendamentoRepository.findAgendamentoByDataHoraAndProfissionalId(dataHora, profissionalId).isPresent()) {
+            throw new DadoInvalidoException("Esse profissional já possui um atendimento nessa data e nesse horário.");
+        }
+
+    }
+
+    private void validarQtdAgendamentos(LocalDateTime data, long profissionalId) {
+        if (data.toLocalTime().isBefore(LocalTime.of(13, 0))) {
+            validarQtdAgendamentosTurnoManha(data, profissionalId);
+        } else {
+            validarQtdAgendamentosTurnoTarde(data, profissionalId);
+        }
+    }
+
+    private void validarQtdAgendamentosTurnoManha(LocalDateTime data, long profissionalId) {
+        LocalDateTime inicioTurno = data.toLocalDate().atTime(8, 0);
+        LocalDateTime fimTurno = data.toLocalDate().atTime(11, 59);
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findAgendamentoByDataHoraBetweenAndProfissionalId(inicioTurno, fimTurno, profissionalId);
+        int qtdAgendamentos = listaAgendamentos.size();
+        if (qtdAgendamentos == 15) {
+            throw new DadoInvalidoException("Não é possível agendar um atendimento no turno da manhã nessa data.O máximo é 15 agendamentos por turno.");
+        }
+    }
+
+    private void validarQtdAgendamentosTurnoTarde(LocalDateTime data, long profissionalId) {
+        LocalDateTime inicioTurno = data.toLocalDate().atTime(14, 0);
+        LocalDateTime fimTurno = data.toLocalDate().atTime(17, 59);
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findAgendamentoByDataHoraBetweenAndProfissionalId(inicioTurno, fimTurno, profissionalId);
+        int qtdAgendamentos = listaAgendamentos.size();
+        if (qtdAgendamentos == 15) {
+            throw new DadoInvalidoException("Não é possível agendar um atendimento no turno da manhã nessa data.O máximo é 15 agendamentos por turno.");
+        }
+    }
+
+    private void validarDiaTurnoProfissional(LocalDateTime dataHora, ProfissionalSaude profissional) {
+        Locale Brasil = Locale.forLanguageTag("pt-BR");
+        String nomeCompletoDia = dataHora.getDayOfWeek().getDisplayName(TextStyle.FULL, Brasil);
+        String turno;
+
+        if (dataHora.toLocalTime().isBefore(LocalTime.of(13, 0))) {
+            turno = "manhã";
+        } else {
+            turno = "tarde";
+        }
+
+        for (DiaTurno diaTurno : profissional.getGradeHorarios()) {
+            if (diaTurno.getDia().getNome().equals(nomeCompletoDia) && diaTurno.getTurno().getNome().equals(turno)) {
+                return;
+            }
+        }
+        throw new DadoInvalidoException("Esse profissional não atende no dia e horário fornecido.");
     }
 }

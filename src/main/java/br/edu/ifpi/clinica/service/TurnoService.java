@@ -1,16 +1,15 @@
 package br.edu.ifpi.clinica.service;
 
-import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
 import br.edu.ifpi.clinica.dto.TurnoDTO;
 import br.edu.ifpi.clinica.dto.TurnoRequestDTO;
 import br.edu.ifpi.clinica.exception.DatabaseException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.Turno;
 import br.edu.ifpi.clinica.repository.TurnoRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TurnoService {
@@ -43,7 +42,7 @@ public class TurnoService {
         Turno turno = turnoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum turno com esse ID."));
 
-        turno.setNome(dto.nome());
+        turno.setNome(dto.nome().toLowerCase());
         turno = turnoRepository.save(turno);
 
         return new TurnoDTO(turno);

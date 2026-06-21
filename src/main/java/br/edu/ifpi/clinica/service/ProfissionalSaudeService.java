@@ -1,28 +1,31 @@
 package br.edu.ifpi.clinica.service;
 
-import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
+import br.edu.ifpi.clinica.dto.DiaTurnoRequestDTO;
 import br.edu.ifpi.clinica.dto.ProfissionalSaudeDTO;
 import br.edu.ifpi.clinica.dto.ProfissionalSaudeRequestDTO;
 import br.edu.ifpi.clinica.exception.DadoInvalidoException;
 import br.edu.ifpi.clinica.exception.DatabaseException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
+import br.edu.ifpi.clinica.model.DiaTurno;
 import br.edu.ifpi.clinica.model.Especialidade;
 import br.edu.ifpi.clinica.model.ProfissionalSaude;
 import br.edu.ifpi.clinica.repository.EspecialidadeRepository;
 import br.edu.ifpi.clinica.repository.ProfissionalSaudeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProfissionalSaudeService {
     private final ProfissionalSaudeRepository profissionalSaudeRepository;
     private final EspecialidadeRepository especialidadeRepository;
+    private final DiaTurnoService diaTurnoService;
 
-    public ProfissionalSaudeService(ProfissionalSaudeRepository profissionalSaudeRepository, EspecialidadeRepository especialidadeRepository) {
+    public ProfissionalSaudeService(ProfissionalSaudeRepository profissionalSaudeRepository, EspecialidadeRepository especialidadeRepository, DiaTurnoService diaTurnoService) {
         this.profissionalSaudeRepository = profissionalSaudeRepository;
         this.especialidadeRepository = especialidadeRepository;
+        this.diaTurnoService = diaTurnoService;
     }
 
     public ProfissionalSaudeDTO insert(ProfissionalSaudeRequestDTO dto) {
@@ -36,20 +39,20 @@ public class ProfissionalSaudeService {
     }
 
     public ProfissionalSaudeDTO findById(Long id) {
-        ProfissionalSaude profissional = profissionalSaudeRepository.findById(id)
+        ProfissionalSaude profissional = profissionalSaudeRepository.findByIdComHorarios(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum profissional com esse ID."));
 
         return new ProfissionalSaudeDTO(profissional);
     }
 
     public List<ProfissionalSaudeDTO> findAll() {
-        List<ProfissionalSaude> profissionais = profissionalSaudeRepository.findAll();
+        List<ProfissionalSaude> profissionais = profissionalSaudeRepository.findAllComHorarios();
 
         return profissionais.stream().map(ProfissionalSaudeDTO::new).toList();
     }
 
     public ProfissionalSaudeDTO update(Long id, ProfissionalSaudeRequestDTO dto) {
-        ProfissionalSaude profissional = profissionalSaudeRepository.findById(id)
+        ProfissionalSaude profissional = profissionalSaudeRepository.findByIdComHorarios(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum profissional com esse ID."));
 
         Especialidade especialidade = especialidadeRepository.findById(dto.especialidadeId())
@@ -75,5 +78,31 @@ public class ProfissionalSaudeService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    public ProfissionalSaudeDTO adicionarDiaTurnoAoProfissional(long id, DiaTurnoRequestDTO dto) {
+        ProfissionalSaude profissional = profissionalSaudeRepository.findByIdComHorarios(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum profissional com esse ID."));
+
+        DiaTurno dt = diaTurnoService.insert(profissional, dto);
+        profissional.getGradeHorarios().add(dt);
+        return new ProfissionalSaudeDTO(profissional);
+    }
+
+    public void removerDiaTurnoDeProfissional(long idProfissional, long idDiaTurno) {
+        ProfissionalSaude profissional = profissionalSaudeRepository.findById(idProfissional)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum profissional com esse ID."));
+
+        try {
+            diaTurnoService.delete(idDiaTurno);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    public List<ProfissionalSaudeDTO> buscarProfissionaisPelaEspecialidade(long especialidadeId) {
+        List<ProfissionalSaude> profissionais = profissionalSaudeRepository.findByEspecialidadeId(especialidadeId);
+
+        return profissionais.stream().map(ProfissionalSaudeDTO::new).toList();
     }
 }
