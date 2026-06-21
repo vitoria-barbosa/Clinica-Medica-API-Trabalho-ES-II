@@ -3,8 +3,6 @@ package br.edu.ifpi.clinica.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Entity
 @Data
 public class Especialidade {
@@ -17,9 +15,6 @@ public class Especialidade {
 
     @Column(nullable = false)
     private double valorConsulta;
-
-    @OneToMany(mappedBy = "especialidade")
-    private List<ProfissionalSaude> profissionais;
 
     public Especialidade() {
     }

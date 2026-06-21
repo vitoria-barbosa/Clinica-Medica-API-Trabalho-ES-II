@@ -14,7 +14,7 @@ public class Agendamento {
     private long id;
 
     @Column(nullable = false)
-    private LocalDateTime datHora;
+    private LocalDateTime dataHora;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profissional_id", nullable = false)
@@ -31,8 +31,8 @@ public class Agendamento {
     public Agendamento() {
     }
 
-    public Agendamento(LocalDateTime datHora, ProfissionalSaude profissional, Paciente paciente, Recepcionista recepcionista) {
-        this.datHora = datHora;
+    public Agendamento(LocalDateTime dataHora, ProfissionalSaude profissional, Paciente paciente, Recepcionista recepcionista) {
+        this.dataHora = dataHora;
         this.profissional = profissional;
         this.paciente = paciente;
         this.recepcionista = recepcionista;

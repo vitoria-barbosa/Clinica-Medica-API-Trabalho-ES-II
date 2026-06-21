@@ -3,14 +3,16 @@ package br.edu.ifpi.clinica.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Entity
 @Data
 public class DiaTurno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "profissional_id", nullable = false)
+    private ProfissionalSaude profissionalSaude;
 
     @ManyToOne
     @JoinColumn(name = "dia_id", nullable = false)
@@ -20,13 +22,11 @@ public class DiaTurno {
     @JoinColumn(name = "turno_id", nullable = false)
     private Turno turno;
 
-    @ManyToMany(mappedBy = "gradeHorarios")
-    private List<ProfissionalSaude> profissionais;
-
     public DiaTurno() {
     }
 
-    public DiaTurno(Dia dia, Turno turno) {
+    public DiaTurno(ProfissionalSaude profissionalSaude, Dia dia, Turno turno) {
+        this.profissionalSaude = profissionalSaude;
         this.dia = dia;
         this.turno = turno;
     }
