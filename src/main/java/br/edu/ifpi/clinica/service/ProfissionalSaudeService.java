@@ -1,17 +1,15 @@
 package br.edu.ifpi.clinica.service;
 
-import br.edu.ifpi.clinica.dto.DiaTurnoRequestDTO;
-import br.edu.ifpi.clinica.dto.ProfissionalSaudeDTO;
-import br.edu.ifpi.clinica.dto.ProfissionalSaudeRequestDTO;
+import br.edu.ifpi.clinica.dto.request.DiaTurnoRequestDTO;
+import br.edu.ifpi.clinica.dto.request.ProfissionalSaudeRequestDTO;
+import br.edu.ifpi.clinica.dto.response.ProfissionalSaudeDTO;
 import br.edu.ifpi.clinica.exception.DadoInvalidoException;
-import br.edu.ifpi.clinica.exception.DatabaseException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.DiaTurno;
 import br.edu.ifpi.clinica.model.Especialidade;
 import br.edu.ifpi.clinica.model.ProfissionalSaude;
 import br.edu.ifpi.clinica.repository.EspecialidadeRepository;
 import br.edu.ifpi.clinica.repository.ProfissionalSaudeRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,11 +71,7 @@ public class ProfissionalSaudeService {
         ProfissionalSaude profissional = profissionalSaudeRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum profissional com esse ID."));
 
-        try {
-            profissionalSaudeRepository.delete(profissional);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        profissionalSaudeRepository.delete(profissional);
     }
 
     public ProfissionalSaudeDTO adicionarDiaTurnoAoProfissional(long id, DiaTurnoRequestDTO dto) {
@@ -90,14 +84,10 @@ public class ProfissionalSaudeService {
     }
 
     public void removerDiaTurnoDeProfissional(long idProfissional, long idDiaTurno) {
-        ProfissionalSaude profissional = profissionalSaudeRepository.findById(idProfissional)
+        profissionalSaudeRepository.findById(idProfissional)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum profissional com esse ID."));
 
-        try {
-            diaTurnoService.delete(idDiaTurno);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        diaTurnoService.delete(idDiaTurno);
     }
 
     public List<ProfissionalSaudeDTO> buscarProfissionaisPelaEspecialidade(long especialidadeId) {
