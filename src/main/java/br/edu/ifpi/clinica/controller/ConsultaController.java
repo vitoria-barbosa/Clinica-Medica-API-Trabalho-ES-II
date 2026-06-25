@@ -1,21 +1,13 @@
 package br.edu.ifpi.clinica.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import br.edu.ifpi.clinica.dto.ConsultaDTO;
-import br.edu.ifpi.clinica.dto.ConsultaRequestDTO;
+import br.edu.ifpi.clinica.dto.request.ConsultaRequestDTO;
+import br.edu.ifpi.clinica.dto.response.ConsultaDTO;
 import br.edu.ifpi.clinica.service.ConsultaService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/consultas")

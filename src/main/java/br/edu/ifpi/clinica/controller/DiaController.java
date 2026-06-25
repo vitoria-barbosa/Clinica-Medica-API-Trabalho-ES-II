@@ -1,7 +1,7 @@
 package br.edu.ifpi.clinica.controller;
 
-import br.edu.ifpi.clinica.dto.DiaDTO;
-import br.edu.ifpi.clinica.dto.DiaRequestDTO;
+import br.edu.ifpi.clinica.dto.request.DiaRequestDTO;
+import br.edu.ifpi.clinica.dto.response.DiaDTO;
 import br.edu.ifpi.clinica.service.DiaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

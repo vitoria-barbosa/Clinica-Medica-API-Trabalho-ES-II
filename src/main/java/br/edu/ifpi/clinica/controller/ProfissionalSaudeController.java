@@ -1,8 +1,8 @@
 package br.edu.ifpi.clinica.controller;
 
-import br.edu.ifpi.clinica.dto.DiaTurnoRequestDTO;
-import br.edu.ifpi.clinica.dto.ProfissionalSaudeDTO;
-import br.edu.ifpi.clinica.dto.ProfissionalSaudeRequestDTO;
+import br.edu.ifpi.clinica.dto.request.DiaTurnoRequestDTO;
+import br.edu.ifpi.clinica.dto.request.ProfissionalSaudeRequestDTO;
+import br.edu.ifpi.clinica.dto.response.ProfissionalSaudeDTO;
 import br.edu.ifpi.clinica.service.ProfissionalSaudeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
