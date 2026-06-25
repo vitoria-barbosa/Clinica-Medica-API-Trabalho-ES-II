@@ -40,4 +40,9 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erros de validação: " + erros);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleAllExceptions(RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + e.getMessage());
+    }
 }
