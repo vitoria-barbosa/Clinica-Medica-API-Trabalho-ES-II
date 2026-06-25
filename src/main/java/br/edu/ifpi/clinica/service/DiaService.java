@@ -1,12 +1,11 @@
 package br.edu.ifpi.clinica.service;
 
-import br.edu.ifpi.clinica.dto.DiaDTO;
-import br.edu.ifpi.clinica.dto.DiaRequestDTO;
-import br.edu.ifpi.clinica.exception.DatabaseException;
+import br.edu.ifpi.clinica.dto.request.DiaRequestDTO;
+import br.edu.ifpi.clinica.dto.response.DiaDTO;
+import br.edu.ifpi.clinica.exception.DadoInvalidoException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.Dia;
 import br.edu.ifpi.clinica.repository.DiaRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +20,11 @@ public class DiaService {
 
     public DiaDTO insert(DiaRequestDTO dto) {
         Dia dia = dto.toEntity();
-        dia = diaRepository.save(dia);
+        try {
+            dia = diaRepository.save(dia);
+        } catch (RuntimeException e) {
+            throw new DadoInvalidoException("Já existe um nome de dia igual a esse no BD.");
+        }
         return new DiaDTO(dia);
     }
 
@@ -51,11 +54,6 @@ public class DiaService {
     public void delete(Long id) {
         Dia dia = diaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhuma categoria com esse ID."));
-
-        try {
-            diaRepository.delete(dia);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        diaRepository.delete(dia);
     }
 }

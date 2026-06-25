@@ -1,4 +1,4 @@
-package br.edu.ifpi.clinica.dto;
+package br.edu.ifpi.clinica.dto.response;
 
 import br.edu.ifpi.clinica.model.Especialidade;
 

@@ -1,4 +1,4 @@
-package br.edu.ifpi.clinica.dto;
+package br.edu.ifpi.clinica.dto.request;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -11,15 +11,15 @@ public record AgendamentoRequestDTO(
         @NotNull(message = "A data e hora do agendamento são obrigatórios")
         LocalDateTime dataHora,
 
-        @Positive(message = "O ID do profissional deve ser maior que zero")
         @NotNull(message = "O ID do profissional é obrigatório")
+        @Positive(message = "O ID do profissional deve ser maior que zero")
         long profissionalId,
 
-        @Positive(message = "O ID do paciente deve ser maior que zero")
         @NotNull(message = "O ID do paciente é obrigatório")
+        @Positive(message = "O ID do paciente deve ser maior que zero")
         long pacienteId,
 
-        @Positive(message = "O ID de recepcionista deve ser maior que zero")
         @NotNull(message = "O ID de recepcionista é obrigatório")
+        @Positive(message = "O ID de recepcionista deve ser maior que zero")
         long recepcionistaId) {
 }

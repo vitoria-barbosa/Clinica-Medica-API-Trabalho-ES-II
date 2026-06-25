@@ -2,6 +2,8 @@ package br.edu.ifpi.clinica.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -18,14 +20,17 @@ public class Agendamento {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profissional_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ProfissionalSaude profissional;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Paciente paciente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recepcionista_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Recepcionista recepcionista;
 
     public Agendamento() {

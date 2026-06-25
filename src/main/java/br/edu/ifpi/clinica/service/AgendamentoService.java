@@ -1,16 +1,14 @@
 package br.edu.ifpi.clinica.service;
 
-import br.edu.ifpi.clinica.dto.AgendamentoDTO;
-import br.edu.ifpi.clinica.dto.AgendamentoRequestDTO;
+import br.edu.ifpi.clinica.dto.request.AgendamentoRequestDTO;
+import br.edu.ifpi.clinica.dto.response.AgendamentoDTO;
 import br.edu.ifpi.clinica.exception.DadoInvalidoException;
-import br.edu.ifpi.clinica.exception.DatabaseException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.*;
 import br.edu.ifpi.clinica.repository.AgendamentoRepository;
 import br.edu.ifpi.clinica.repository.PacienteRepository;
 import br.edu.ifpi.clinica.repository.ProfissionalSaudeRepository;
 import br.edu.ifpi.clinica.repository.RecepcionistaRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -111,12 +109,7 @@ public class AgendamentoService {
     public void delete(Long id) {
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum agendamento com esse ID."));
-
-        try {
-            agendamentoRepository.delete(agendamento);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        agendamentoRepository.delete(agendamento);
     }
 
     private void validarDataHora(LocalDateTime dataHora, long profissionalId) {

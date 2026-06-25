@@ -1,4 +1,4 @@
-package br.edu.ifpi.clinica.dto;
+package br.edu.ifpi.clinica.dto.request;
 
 import br.edu.ifpi.clinica.model.Paciente;
 import jakarta.validation.constraints.Min;

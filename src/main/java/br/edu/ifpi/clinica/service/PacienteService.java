@@ -1,16 +1,13 @@
 package br.edu.ifpi.clinica.service;
 
-import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
-import br.edu.ifpi.clinica.dto.PacienteDTO;
-import br.edu.ifpi.clinica.dto.PacienteRequestDTO;
-import br.edu.ifpi.clinica.exception.DatabaseException;
+import br.edu.ifpi.clinica.dto.request.PacienteRequestDTO;
+import br.edu.ifpi.clinica.dto.response.PacienteDTO;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.Paciente;
 import br.edu.ifpi.clinica.repository.PacienteRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PacienteService {
@@ -58,11 +55,6 @@ public class PacienteService {
     public void delete(Long id) {
         Paciente paciente = pacienteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum paciente com esse ID."));
-
-        try {
-            pacienteRepository.delete(paciente);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        pacienteRepository.delete(paciente);
     }
 }

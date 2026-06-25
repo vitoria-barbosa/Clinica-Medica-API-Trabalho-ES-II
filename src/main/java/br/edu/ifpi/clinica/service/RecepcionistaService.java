@@ -1,16 +1,13 @@
 package br.edu.ifpi.clinica.service;
 
-import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
-import br.edu.ifpi.clinica.dto.RecepcionistaDTO;
-import br.edu.ifpi.clinica.dto.RecepcionistaRequestDTO;
-import br.edu.ifpi.clinica.exception.DatabaseException;
+import br.edu.ifpi.clinica.dto.request.RecepcionistaRequestDTO;
+import br.edu.ifpi.clinica.dto.response.RecepcionistaDTO;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.Recepcionista;
 import br.edu.ifpi.clinica.repository.RecepcionistaRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RecepcionistaService {
@@ -55,11 +52,6 @@ public class RecepcionistaService {
     public void delete(Long id) {
         Recepcionista recepcionista = recepcionistaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhuma recepcionista com esse ID."));
-
-        try {
-            recepcionistaRepository.delete(recepcionista);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        recepcionistaRepository.delete(recepcionista);
     }
 }

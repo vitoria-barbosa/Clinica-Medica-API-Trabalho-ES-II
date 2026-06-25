@@ -1,4 +1,4 @@
-package br.edu.ifpi.clinica.dto;
+package br.edu.ifpi.clinica.dto.request;
 
 import br.edu.ifpi.clinica.model.Turno;
 import jakarta.validation.constraints.NotBlank;
