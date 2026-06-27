@@ -31,35 +31,36 @@ A API modela uma clínica médica com as seguintes regras principais:
 
 O sistema foi pensado a partir do seguinte levantamento de atores e histórias de usuário:
 
-| Ator | Papel |
-|---|---|
-| Paciente | Recebe o atendimento e acompanha seus agendamentos |
-| Recepcionista | Cadastra pacientes e gerencia os agendamentos |
-| Profissional da Saúde | Realiza as consultas e organiza sua agenda |
-| Administrador | Cadastra profissionais e mantém o sistema |
+| Ator                  | Papel                                                                    |
+|-----------------------|--------------------------------------------------------------------------|
+| Paciente              | Recebe atendimento                                                       |
+| Recepcionista         | Cadastra pacientes e profissionais e gerencia os agendamentos            |
+| Profissional da Saúde | Realiza consultas, visualiza sua agenda e gerencia sua grade de horários |
 
-| ID | História de Usuário |
-|---|---|
-| HU01 | Como **paciente**, quero consultar meus agendamentos, para acompanhar minhas consultas marcadas. |
-| HU02 | Como **recepcionista**, quero agendar consultas para pacientes, para definir data, horário e especialidade da consulta solicitada. |
-| HU03 | Como **recepcionista**, quero cadastrar pacientes, para permitir que tenham acesso às consultas agendadas. |
-| HU04 | Como **profissional da clínica**, quero visualizar minha agenda de atendimentos, para organizar minha rotina de trabalho. |
-| HU05 | Como **administrador do sistema**, quero adicionar profissionais da saúde, para permitir que utilizem o sistema. |
+| ID    | História de Usuário                                                                                                                                          |
+|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| HU01  | Como **recepcionista**, eu quero cadastrar profissionais da saúde, para que eles possam realizar consultas na clínica                                        |
+| HU02  | Como **recepcionista**, eu quero cadastrar pacientes, para possibilitar o agendamento de consultas                                                           |
+| HU03  | Como **recepcionista**, eu quero agendar consultas para pacientes, para definir data, horário e especialidade da consulta solicitada pelo paciente           |
+| HU04  | Como **profissional da saúde**, eu quero visualizar minha agenda de atendimentos, para organizar minha rotina de trabalho                                    |
+| HU05  | Como **recepcionista**, eu quero visualizar os agendamentos da clínica, para acompanhar as consultas marcadas                                                |
+| HU06  | Como **profissional da saúde**, eu quero registrar a consulta realizada, para guardar informações importantes referente àquele atendimento                   |
+| HU07  | Como **profissional da saúde**, eu quero definir minha grade de horários, para definir os dias e turnos que vou estar realizando os atendimentos na clínica  |
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Tecnologia | Versão | Uso |
-|---|---|---|
-| Java | 21 | Linguagem principal |
-| Spring Boot | 3.5.15 | Framework da aplicação |
-| Spring Data JPA | — | Persistência e repositórios |
-| Spring Validation | — | Validação dos DTOs de entrada |
-| springdoc-openapi | 2.8.16 | Documentação Swagger/OpenAPI |
-| PostgreSQL | — | Banco de dados relacional |
-| Lombok | — | Redução de boilerplate (`@Data`) |
-| Maven (wrapper) | — | Build e gerenciamento de dependências |
+| Tecnologia        | Versão | Uso                                   |
+|-------------------|--------|---------------------------------------|
+| Java              | 21     | Linguagem principal                   |
+| Spring Boot       | 3.5.15 | Framework da aplicação                |
+| Spring Data JPA   | —      | Persistência e repositórios           |
+| Spring Validation | —      | Validação dos DTOs de entrada         |
+| springdoc-openapi | 2.8.16 | Documentação Swagger/OpenAPI          |
+| PostgreSQL        | —      | Banco de dados relacional             |
+| Lombok            | —      | Redução de boilerplate (`@Data`)      |
+| Maven (wrapper)   | —      | Build e gerenciamento de dependências |
 
 ---
 
@@ -201,75 +202,75 @@ http://localhost:8080/swagger-ui.html
 
 ### Pacientes — `/pacientes`
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/pacientes` | Cadastra um novo paciente |
-| `GET` | `/pacientes` | Lista todos os pacientes |
-| `GET` | `/pacientes/{id}` | Detalha um paciente |
-| `PUT` | `/pacientes/{id}` | Atualiza um paciente |
-| `DELETE` | `/pacientes/{id}` | Remove um paciente |
+| Método   | Endpoint          | Descrição                 |
+|----------|-------------------|---------------------------|
+| `POST`   | `/pacientes`      | Cadastra um novo paciente |
+| `GET`    | `/pacientes`      | Lista todos os pacientes  |
+| `GET`    | `/pacientes/{id}` | Detalha um paciente       |
+| `PUT`    | `/pacientes/{id}` | Atualiza um paciente      |
+| `DELETE` | `/pacientes/{id}` | Remove um paciente        |
 
 ### Profissionais de Saúde — `/profissionais-da-saude`
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/profissionais-da-saude` | Cadastra um profissional |
-| `GET` | `/profissionais-da-saude` | Lista todos os profissionais |
-| `GET` | `/profissionais-da-saude/{id}` | Detalha um profissional |
-| `PUT` | `/profissionais-da-saude/{id}` | Atualiza um profissional |
-| `DELETE` | `/profissionais-da-saude/{id}` | Remove um profissional |
-| `POST` | `/profissionais-da-saude/{idProfissional}/grade-horarios` | Adiciona um Dia x Turno à grade do profissional |
-| `DELETE` | `/profissionais-da-saude/{idProfissional}/grade-horarios/{id}` | Remove um item da grade de horários |
+| Método   | Endpoint                                                       | Descrição                                       |
+|----------|----------------------------------------------------------------|-------------------------------------------------|
+| `POST`   | `/profissionais-da-saude`                                      | Cadastra um profissional                        |
+| `GET`    | `/profissionais-da-saude`                                      | Lista todos os profissionais                    |
+| `GET`    | `/profissionais-da-saude/{id}`                                 | Detalha um profissional                         |
+| `PUT`    | `/profissionais-da-saude/{id}`                                 | Atualiza um profissional                        |
+| `DELETE` | `/profissionais-da-saude/{id}`                                 | Remove um profissional                          |
+| `POST`   | `/profissionais-da-saude/{idProfissional}/grade-horarios`      | Adiciona um Dia x Turno à grade do profissional |
+| `DELETE` | `/profissionais-da-saude/{idProfissional}/grade-horarios/{id}` | Remove um item da grade de horários             |
 
 ### Recepcionistas — `/recepcionistas`
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/recepcionistas` | Cadastra uma recepcionista |
-| `GET` | `/recepcionistas` | Lista todas as recepcionistas |
-| `GET` | `/recepcionistas/{id}` | Detalha uma recepcionista |
-| `PUT` | `/recepcionistas/{id}` | Atualiza uma recepcionista |
-| `DELETE` | `/recepcionistas/{id}` | Remove uma recepcionista |
+| Método   | Endpoint               | Descrição                     |
+|----------|------------------------|-------------------------------|
+| `POST`   | `/recepcionistas`      | Cadastra uma recepcionista    |
+| `GET`    | `/recepcionistas`      | Lista todas as recepcionistas |
+| `GET`    | `/recepcionistas/{id}` | Detalha uma recepcionista     |
+| `PUT`    | `/recepcionistas/{id}` | Atualiza uma recepcionista    |
+| `DELETE` | `/recepcionistas/{id}` | Remove uma recepcionista      |
 
 ### Especialidades — `/especialidades`
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/especialidades` | Cadastra uma especialidade |
-| `GET` | `/especialidades` | Lista todas as especialidades |
-| `GET` | `/especialidades/{id}` | Detalha uma especialidade |
-| `PUT` | `/especialidades/{id}` | Atualiza uma especialidade |
-| `DELETE` | `/especialidades/{id}` | Remove uma especialidade |
-| `GET` | `/especialidades/{id}/profissionais` | Lista os profissionais daquela especialidade |
+| Método   | Endpoint                             | Descrição                                    |
+|----------|--------------------------------------|----------------------------------------------|
+| `POST`   | `/especialidades`                    | Cadastra uma especialidade                   |
+| `GET`    | `/especialidades`                    | Lista todas as especialidades                |
+| `GET`    | `/especialidades/{id}`               | Detalha uma especialidade                    |
+| `PUT`    | `/especialidades/{id}`               | Atualiza uma especialidade                   |
+| `DELETE` | `/especialidades/{id}`               | Remove uma especialidade                     |
+| `GET`    | `/especialidades/{id}/profissionais` | Lista os profissionais daquela especialidade |
 
 ### Dias e Turnos — `/dias` e `/turnos`
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` / `GET` / `PUT` / `DELETE` | `/dias` (`/{id}`) | CRUD completo de dias da semana |
+| Método                            | Endpoint            | Descrição                                     |
+|-----------------------------------|---------------------|-----------------------------------------------|
+| `POST` / `GET` / `PUT` / `DELETE` | `/dias` (`/{id}`)   | CRUD completo de dias da semana               |
 | `POST` / `GET` / `PUT` / `DELETE` | `/turnos` (`/{id}`) | CRUD completo de turnos (manhã, tarde, noite) |
 
 ### Agendamentos — `/agendamentos`
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/agendamentos` | Cria um novo agendamento |
-| `GET` | `/agendamentos` | Lista todos os agendamentos |
-| `GET` | `/agendamentos/{id}` | Detalha um agendamento |
-| `PUT` | `/agendamentos/{id}` | Atualiza um agendamento |
-| `DELETE` | `/agendamentos/{id}` | Remove um agendamento |
-| `GET` | `/agendamentos/paciente/{pacienteId}` | Lista agendamentos de um paciente |
-| `GET` | `/agendamentos/profissional/{profissionalId}` | Lista agendamentos de um profissional |
+| Método   | Endpoint                                      | Descrição                             |
+|----------|-----------------------------------------------|---------------------------------------|
+| `POST`   | `/agendamentos`                               | Cria um novo agendamento              |
+| `GET`    | `/agendamentos`                               | Lista todos os agendamentos           |
+| `GET`    | `/agendamentos/{id}`                          | Detalha um agendamento                |
+| `PUT`    | `/agendamentos/{id}`                          | Atualiza um agendamento               |
+| `DELETE` | `/agendamentos/{id}`                          | Remove um agendamento                 |
+| `GET`    | `/agendamentos/paciente/{pacienteId}`         | Lista agendamentos de um paciente     |
+| `GET`    | `/agendamentos/profissional/{profissionalId}` | Lista agendamentos de um profissional |
 
 ### Consultas — `/consultas`
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/consultas` | Registra uma nova consulta |
-| `GET` | `/consultas` | Lista todas as consultas |
-| `GET` | `/consultas/{id}` | Detalha uma consulta |
-| `PUT` | `/consultas/{id}` | Atualiza uma consulta |
-| `DELETE` | `/consultas/{id}` | Remove uma consulta |
+| Método   | Endpoint          | Descrição                  |
+|----------|-------------------|----------------------------|
+| `POST`   | `/consultas`      | Registra uma nova consulta |
+| `GET`    | `/consultas`      | Lista todas as consultas   |
+| `GET`    | `/consultas/{id}` | Detalha uma consulta       |
+| `PUT`    | `/consultas/{id}` | Atualiza uma consulta      |
+| `DELETE` | `/consultas/{id}` | Remove uma consulta        |
 
 ---
 
@@ -277,12 +278,12 @@ http://localhost:8080/swagger-ui.html
 
 O `AgendamentoService` concentra a validação das regras de negócio mais relevantes do sistema, aplicadas tanto na criação (`POST`) quanto na atualização (`PUT`) de um agendamento:
 
-| Regra | Validação aplicada |
-|---|---|
-| Horário comercial | O agendamento só pode ser marcado entre **08:00 e 18:00** |
-| Sem conflito para o profissional | Um profissional não pode ter dois agendamentos na mesma data e horário |
-| Sem conflito para o paciente | Um paciente não pode ter dois agendamentos na mesma data e horário |
-| Limite por turno | Cada profissional pode ter no máximo **15 agendamentos** por turno (manhã: 08h–11h59, tarde: 14h–17h59) |
+| Regra                             | Validação aplicada                                                                                                    |
+|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| Horário comercial                 | O agendamento só pode ser marcado entre **08:00 e 18:00**                                                             |
+| Sem conflito para o profissional  | Um profissional não pode ter dois agendamentos na mesma data e horário                                                |
+| Sem conflito para o paciente      | Um paciente não pode ter dois agendamentos na mesma data e horário                                                    |
+| Limite por turno                  | Cada profissional pode ter no máximo **15 agendamentos** por turno (manhã: 08h–11h59, tarde: 14h–17h59)               |
 | Grade de horários do profissional | O agendamento só é permitido no dia da semana e turno em que o profissional está cadastrado para atender (`DiaTurno`) |
 
 Quando alguma regra é violada, o serviço lança `DadoInvalidoException`, que é capturada pelo `GlobalExceptionHandler` e retornada como `400 Bad Request` com uma mensagem explicativa.
@@ -334,27 +335,27 @@ O uso do `mvnw`/`mvnw.cmd` garante que qualquer pessoa consiga compilar e rodar 
       <a href="https://github.com/vitoria-barbosa" title="Perfil da Vitória no GitHub">
         <img src="https://github.com/vitoria-barbosa.png" width="100px;" alt="Foto de Vitória no GitHub"/><br>
         <sub>
-          <b>Vitória</b>
+          <b>Vitória Barbosa</b>
         </sub><br>
-        <sub>Product Owner</sub>
+        <sub>Product Owner / Dev Team</sub>
       </a>
     </td>
     <td align="center">
       <a href="https://github.com/matheusydev" title="Perfil de Matheus no GitHub">
         <img src="https://github.com/matheusydev.png" width="100px;" alt="Foto de Matheus no GitHub"/><br>
         <sub>
-          <b>Matheus</b>
+          <b>Matheus Ylan</b>
         </sub><br>
-        <sub>Scrum Master</sub>
+        <sub>Dev Team</sub>
       </a>
     </td>
     <td align="center">
       <a href="https://github.com/kamilansc" title="Perfil da Kamila no GitHub">
         <img src="https://github.com/kamilansc.png" width="100px;" alt="Foto de Kamila no GitHub"/><br>
         <sub>
-          <b>Kamila</b>
+          <b>Kamila Rocha</b>
         </sub><br>
-        <sub>Dev Team</sub>
+        <sub>Scrum Master</sub>
       </a>
     </td>
     <td align="center">
@@ -363,7 +364,7 @@ O uso do `mvnw`/`mvnw.cmd` garante que qualquer pessoa consiga compilar e rodar 
         <sub>
           <b>Mylena</b>
         </sub><br>
-        <sub>Dev Team</sub>
+        <sub>Scrum Master</sub>
       </a>
     </td>
   </tr>
