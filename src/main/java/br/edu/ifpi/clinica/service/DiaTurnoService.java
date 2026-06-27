@@ -1,8 +1,7 @@
 package br.edu.ifpi.clinica.service;
 
-import br.edu.ifpi.clinica.dto.DiaTurnoRequestDTO;
+import br.edu.ifpi.clinica.dto.request.DiaTurnoRequestDTO;
 import br.edu.ifpi.clinica.exception.DadoInvalidoException;
-import br.edu.ifpi.clinica.exception.DatabaseException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.Dia;
 import br.edu.ifpi.clinica.model.DiaTurno;
@@ -11,7 +10,6 @@ import br.edu.ifpi.clinica.model.Turno;
 import br.edu.ifpi.clinica.repository.DiaRepository;
 import br.edu.ifpi.clinica.repository.DiaTurnoRepository;
 import br.edu.ifpi.clinica.repository.TurnoRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,11 +41,6 @@ public class DiaTurnoService {
     public void delete(Long id) {
         DiaTurno diaTurno = diaTurnoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum dia turno com esse ID."));
-
-        try {
-            diaTurnoRepository.delete(diaTurno);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        diaTurnoRepository.delete(diaTurno);
     }
 }

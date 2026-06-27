@@ -1,16 +1,14 @@
 package br.edu.ifpi.clinica.service;
 
-import java.util.List;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
-import br.edu.ifpi.clinica.dto.EspecialidadeDTO;
-import br.edu.ifpi.clinica.dto.EspecialidadeRequestDTO;
-import br.edu.ifpi.clinica.exception.DatabaseException;
+import br.edu.ifpi.clinica.dto.request.EspecialidadeRequestDTO;
+import br.edu.ifpi.clinica.dto.response.EspecialidadeDTO;
+import br.edu.ifpi.clinica.exception.DadoInvalidoException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.Especialidade;
 import br.edu.ifpi.clinica.repository.EspecialidadeRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class EspecialidadeService {
@@ -22,7 +20,11 @@ public class EspecialidadeService {
 
     public EspecialidadeDTO insert(EspecialidadeRequestDTO dto) {
         Especialidade especialidade = dto.toEntity();
-        especialidade = especialidadeRepository.save(especialidade);
+        try {
+            especialidade = especialidadeRepository.save(especialidade);
+        } catch (RuntimeException e) {
+            throw new DadoInvalidoException("Já existe um nome de especialidade igual e esse no BD.");
+        }
         return new EspecialidadeDTO(especialidade);
     }
 
@@ -53,11 +55,6 @@ public class EspecialidadeService {
     public void delete(Long id) {
         Especialidade especialidade = especialidadeRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhuma especialidade com esse ID."));
-
-        try {
-            especialidadeRepository.delete(especialidade);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        especialidadeRepository.delete(especialidade);
     }
 }

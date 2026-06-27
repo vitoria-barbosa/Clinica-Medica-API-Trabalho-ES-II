@@ -1,12 +1,11 @@
 package br.edu.ifpi.clinica.service;
 
-import br.edu.ifpi.clinica.dto.TurnoDTO;
-import br.edu.ifpi.clinica.dto.TurnoRequestDTO;
-import br.edu.ifpi.clinica.exception.DatabaseException;
+import br.edu.ifpi.clinica.dto.request.TurnoRequestDTO;
+import br.edu.ifpi.clinica.dto.response.TurnoDTO;
+import br.edu.ifpi.clinica.exception.DadoInvalidoException;
 import br.edu.ifpi.clinica.exception.RecursoNaoEncontradoException;
 import br.edu.ifpi.clinica.model.Turno;
 import br.edu.ifpi.clinica.repository.TurnoRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +20,11 @@ public class TurnoService {
 
     public TurnoDTO insert(TurnoRequestDTO dto) {
         Turno turno = dto.toEntity();
-        turno = turnoRepository.save(turno);
+        try {
+            turno = turnoRepository.save(turno);
+        } catch (RuntimeException e) {
+            throw new DadoInvalidoException("Já existe um nome de turno igual a esse no BD.");
+        }
         return new TurnoDTO(turno);
     }
 
@@ -51,11 +54,6 @@ public class TurnoService {
     public void delete(Long id) {
         Turno turno = turnoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Não existe nenhum turno com esse ID."));
-
-        try {
-            turnoRepository.delete(turno);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        turnoRepository.delete(turno);
     }
 }

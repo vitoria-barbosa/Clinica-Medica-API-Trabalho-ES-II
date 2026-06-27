@@ -12,7 +12,9 @@
 
 </div>
 
-> API desenvolvida para o Trabalho de Engenharia de Software II do IFPI. Permite cadastrar pacientes, profissionais de saúde e recepcionistas, organizar a grade de horários dos profissionais e gerenciar agendamentos e consultas de uma clínica médica.
+> API desenvolvida para o Trabalho de Engenharia de Software II do IFPI. Permite cadastrar pacientes, profissionais de
+> saúde e recepcionistas, organizar a grade de horários dos profissionais e gerenciar agendamentos e consultas de uma
+> clínica médica.
 
 ---
 
@@ -20,10 +22,14 @@
 
 A API modela uma clínica médica com as seguintes regras principais:
 
-- **Usuario** é uma entidade abstrata (herança `JOINED`) que generaliza `Paciente`, `ProfissionalSaude` e `Recepcionista`, todos com CPF, nome e telefone.
-- Cada **ProfissionalSaude** pertence a uma **Especialidade** e possui uma **grade de horários** (combinações de `Dia` x `Turno`).
-- **Agendamento** é a entidade base (herança `JOINED`) que relaciona profissional, paciente e recepcionista em uma data/hora.
-- **Consulta** estende `Agendamento`, adicionando os dados clínicos (sintomas, diagnóstico, prescrição, exames e valor total).
+- **Usuario** é uma entidade abstrata (herança `JOINED`) que generaliza `Paciente`, `ProfissionalSaude` e
+  `Recepcionista`, todos com CPF, nome e telefone.
+- Cada **ProfissionalSaude** pertence a uma **Especialidade** e possui uma **grade de horários** (combinações de `Dia` x
+  `Turno`).
+- **Agendamento** é a entidade base (herança `JOINED`) que relaciona profissional, paciente e recepcionista em uma
+  data/hora.
+- **Consulta** estende `Agendamento`, adicionando os dados clínicos (sintomas, diagnóstico, prescrição, exames e valor
+  total).
 
 ---
 
@@ -91,22 +97,35 @@ clinica/
 ## 📄 Responsabilidade de cada camada
 
 ### `model/`
-Entidades JPA do domínio. `Usuario` e `Agendamento` usam herança `JOINED` para compartilhar campos comuns entre `Paciente`/`ProfissionalSaude`/`Recepcionista` e entre `Agendamento`/`Consulta`, respectivamente.
+
+Entidades JPA do domínio. `Usuario` e `Agendamento` usam herança `JOINED` para compartilhar campos comuns entre
+`Paciente`/`ProfissionalSaude`/`Recepcionista` e entre `Agendamento`/`Consulta`, respectivamente.
 
 ### `dto/`
-Implementados como **Java Records**. Os `RequestDTO` recebem e validam a entrada (`@NotBlank`, `@Positive`, `@Future`, etc.) e expõem um método `toEntity()` para converter em entidade. Os `DTO` de saída expõem apenas os dados relevantes da entidade (evitando, por exemplo, expor objetos relacionados completos).
+
+Implementados como **Java Records**. Os `RequestDTO` recebem e validam a entrada (`@NotBlank`, `@Positive`, `@Future`,
+etc.) e expõem um método `toEntity()` para converter em entidade. Os `DTO` de saída expõem apenas os dados relevantes da
+entidade (evitando, por exemplo, expor objetos relacionados completos).
 
 ### `repository/`
-Interfaces `JpaRepository` responsáveis pelo acesso ao banco. Alguns repositórios expõem consultas customizadas (ex.: busca de profissional já trazendo a grade de horários).
+
+Interfaces `JpaRepository` responsáveis pelo acesso ao banco. Alguns repositórios expõem consultas customizadas (ex.:
+busca de profissional já trazendo a grade de horários).
 
 ### `service/`
-Camada com as regras de negócio: validação de relacionamentos (ex.: especialidade existente antes de cadastrar um profissional), orquestração entre múltiplos repositórios e lançamento de exceções de domínio.
+
+Camada com as regras de negócio: validação de relacionamentos (ex.: especialidade existente antes de cadastrar um
+profissional), orquestração entre múltiplos repositórios e lançamento de exceções de domínio.
 
 ### `controller/`
-Expõe os recursos REST. Cada controller é responsável por um único agregado (Paciente, ProfissionalSaude, Recepcionista, Especialidade, Dia, Turno, Agendamento, Consulta).
+
+Expõe os recursos REST. Cada controller é responsável por um único agregado (Paciente, ProfissionalSaude, Recepcionista,
+Especialidade, Dia, Turno, Agendamento, Consulta).
 
 ### `exception/`
-`GlobalExceptionHandler` centraliza o tratamento de erros (`RecursoNaoEncontradoException`, `DatabaseException`, `DadoInvalidoException` e erros de validação do Bean Validation), padronizando as respostas de erro da API.
+
+`GlobalExceptionHandler` centraliza o tratamento de erros (`RecursoNaoEncontradoException`, `DatabaseException`,
+`DadoInvalidoException` e erros de validação do Bean Validation), padronizando as respostas de erro da API.
 
 ---
 
@@ -127,14 +146,9 @@ As configurações de conexão ficam em `src/main/resources/application.properti
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/clinica_bd
-spring.datasource.username=postgres
+spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha_aqui
-spring.jpa.hibernate.ddl-auto=create
 ```
-
-> ⚠️ **Importante:** o `application.properties` atual contém credenciais reais do banco. Antes de subir o projeto para um repositório público, considere mover usuário/senha para variáveis de ambiente (ex.: com `${DB_PASSWORD}` + `.env`) e adicionar o arquivo ao `.gitignore`.
-
-> `spring.jpa.hibernate.ddl-auto=create` recria as tabelas a cada execução — ideal para desenvolvimento/avaliação, mas apaga os dados existentes a cada start. Troque para `update` ou `validate` se quiser manter os dados entre execuções.
 
 ---
 
@@ -276,7 +290,8 @@ http://localhost:8080/swagger-ui.html
 
 ## 📌 Regras de negócio do Agendamento
 
-O `AgendamentoService` concentra a validação das regras de negócio mais relevantes do sistema, aplicadas tanto na criação (`POST`) quanto na atualização (`PUT`) de um agendamento:
+O `AgendamentoService` concentra a validação das regras de negócio mais relevantes do sistema, aplicadas tanto na
+criação (`POST`) quanto na atualização (`PUT`) de um agendamento:
 
 | Regra                             | Validação aplicada                                                                                                    |
 |-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|
@@ -286,35 +301,48 @@ O `AgendamentoService` concentra a validação das regras de negócio mais relev
 | Limite por turno                  | Cada profissional pode ter no máximo **15 agendamentos** por turno (manhã: 08h–11h59, tarde: 14h–17h59)               |
 | Grade de horários do profissional | O agendamento só é permitido no dia da semana e turno em que o profissional está cadastrado para atender (`DiaTurno`) |
 
-Quando alguma regra é violada, o serviço lança `DadoInvalidoException`, que é capturada pelo `GlobalExceptionHandler` e retornada como `400 Bad Request` com uma mensagem explicativa.
+Quando alguma regra é violada, o serviço lança `DadoInvalidoException`, que é capturada pelo `GlobalExceptionHandler` e
+retornada como `400 Bad Request` com uma mensagem explicativa.
 
 ---
 
 ## 🧠 Decisões Técnicas
 
 ### DTOs como Java Records
-Os DTOs de entrada e saída foram implementados como `record`, garantindo imutabilidade e reduzindo boilerplate. Os `RequestDTO` concentram as validações via Bean Validation (`@NotBlank`, `@Positive`, `@Future`) e o método `toEntity()` para conversão explícita em entidade.
+
+Os DTOs de entrada e saída foram implementados como `record`, garantindo imutabilidade e reduzindo boilerplate. Os
+`RequestDTO` concentram as validações via Bean Validation (`@NotBlank`, `@Positive`, `@Future`) e o método `toEntity()`
+para conversão explícita em entidade.
 
 ### Herança `JOINED` em `Usuario` e `Agendamento`
-`Usuario` (base de `Paciente`, `ProfissionalSaude` e `Recepcionista`) e `Agendamento` (base de `Consulta`) usam a estratégia `InheritanceType.JOINED`, evitando duplicação de colunas comuns e mantendo uma tabela própria para os campos específicos de cada subtipo.
+
+`Usuario` (base de `Paciente`, `ProfissionalSaude` e `Recepcionista`) e `Agendamento` (base de `Consulta`) usam a
+estratégia `InheritanceType.JOINED`, evitando duplicação de colunas comuns e mantendo uma tabela própria para os campos
+específicos de cada subtipo.
 
 ### Camada de exceções centralizada
-O `GlobalExceptionHandler` com `@ControllerAdvice` padroniza as respostas de erro (404 para recurso não encontrado, 400 para dados inválidos ou violação de regras de banco), evitando tratamento de erro repetido em cada controller.
+
+O `GlobalExceptionHandler` com `@ControllerAdvice` padroniza as respostas de erro (404 para recurso não encontrado, 400
+para dados inválidos ou violação de regras de banco), evitando tratamento de erro repetido em cada controller.
 
 ### springdoc-openapi para documentação
-Gera a documentação Swagger/OpenAPI automaticamente a partir do código, sem necessidade de manutenção manual de um arquivo de especificação separado.
+
+Gera a documentação Swagger/OpenAPI automaticamente a partir do código, sem necessidade de manutenção manual de um
+arquivo de especificação separado.
 
 ### Maven Wrapper
-O uso do `mvnw`/`mvnw.cmd` garante que qualquer pessoa consiga compilar e rodar o projeto com a versão correta do Maven, sem precisar instalá-lo globalmente.
+
+O uso do `mvnw`/`mvnw.cmd` garante que qualquer pessoa consiga compilar e rodar o projeto com a versão correta do Maven,
+sem precisar instalá-lo globalmente.
 
 ---
 
-
 ## 🎓 Aprendizados Adquiridos
- 
+
 - ✅ Modelagem de herança JPA com `InheritanceType.JOINED`
 - ✅ DTOs com Java Records e Bean Validation
-- ✅ Arquitetura em camadas (Controller → Service → Repository → Model), separando apresentação, regra de negócio e persistência
+- ✅ Arquitetura em camadas (Controller → Service → Repository → Model), separando apresentação, regra de negócio e
+  persistência
 - ✅ Tratamento global de exceções com `@ControllerAdvice`
 - ✅ Documentação automática de API com springdoc-openapi/Swagger
 - ✅ Relacionamentos `@ManyToOne`/`@OneToMany` entre profissionais, especialidades, dias e turnos
@@ -322,8 +350,10 @@ O uso do `mvnw`/`mvnw.cmd` garante que qualquer pessoa consiga compilar e rodar 
 - ✅ Boas práticas REST (recursos no plural, sub-rotas para relacionamentos)
 - ✅ Padrão de projeto **Repository**, isolando o acesso a dados da camada de regras de negócio
 - ✅ Padrão de projeto **DTO**, separando os dados trafegados pela API das entidades de domínio
-- ✅ Princípio SOLID **SRP** (Responsabilidade Única) aplicado na separação entre controllers, services, repositories e DTOs
-- ✅ Estudo dos demais princípios SOLID (OCP, LSP, ISP, DIP) e reflexão sobre onde poderiam ser aplicados em evoluções futuras do projeto
+- ✅ Princípio SOLID **SRP** (Responsabilidade Única) aplicado na separação entre controllers, services, repositories e
+  DTOs
+- ✅ Estudo dos demais princípios SOLID (OCP, LSP, ISP, DIP) e reflexão sobre onde poderiam ser aplicados em evoluções
+  futuras do projeto
 
 ---
 

@@ -1,12 +1,22 @@
 package br.edu.ifpi.clinica.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Data
-public class Consulta extends Agendamento {
+public class Consulta {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "agendamento_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Agendamento agendamento;
+
     private String sintomas;
 
     private String diagnostico;
@@ -21,5 +31,11 @@ public class Consulta extends Agendamento {
     public Consulta() {
     }
 
-
+    public Consulta(String sintomas, String diagnostico, String prescricao, String exames, double valorTotal) {
+        this.sintomas = sintomas;
+        this.diagnostico = diagnostico;
+        this.prescricao = prescricao;
+        this.exames = exames;
+        this.valorTotal = valorTotal;
+    }
 }

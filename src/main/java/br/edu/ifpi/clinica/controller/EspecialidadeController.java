@@ -1,8 +1,8 @@
 package br.edu.ifpi.clinica.controller;
 
-import br.edu.ifpi.clinica.dto.EspecialidadeDTO;
-import br.edu.ifpi.clinica.dto.EspecialidadeRequestDTO;
-import br.edu.ifpi.clinica.dto.ProfissionalSaudeDTO;
+import br.edu.ifpi.clinica.dto.request.EspecialidadeRequestDTO;
+import br.edu.ifpi.clinica.dto.response.EspecialidadeDTO;
+import br.edu.ifpi.clinica.dto.response.ProfissionalSaudeDTO;
 import br.edu.ifpi.clinica.service.EspecialidadeService;
 import br.edu.ifpi.clinica.service.ProfissionalSaudeService;
 import jakarta.validation.Valid;
